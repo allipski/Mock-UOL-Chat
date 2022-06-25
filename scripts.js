@@ -90,6 +90,7 @@ function enviarMensagem() {
 		type: "message",
 		time: timeNow
     }; 
+    document.querySelector('input').value = "";
     let enviar = axios.post('https://mock-api.driven.com.br/api/v6/uol/messages', msgCompleta);
     enviar.then(puxarMensagens);
     enviar.catch(recarregar);
