@@ -25,6 +25,8 @@ function deuRuimUsername(erro) {
     alert ("Já existe um usuário com esse nome, por favor escolha um novo.")
     checkUsername();
 }
+puxarMensagens();
+
 function puxarMensagens() {
     let promise = axios.get('https://mock-api.driven.com.br/api/v6/uol/messages');
     promise.then(carregarMensagens);
@@ -47,11 +49,11 @@ function erro(request) {
 function renderizarMensagens() {
     let div = document.querySelector(".feedmensagens");
     div.innerHTML = "";
-
     for (let i = 0; i < listaDeMensagens.length; i++) {
         const mensagematual = listaDeMensagens[i];
         div.innerHTML += htmlMensagem(mensagematual);
     }
+    document.querySelector(".feedmensagens > div:nth-last-of-type(1)").scrollIntoView();
 }
 
 function htmlMensagem(elemento) {
@@ -69,11 +71,30 @@ function htmlMensagem(elemento) {
     </div>
   `;
     }
-    if (elemento.type === "private_message"){
+    if (elemento.type === "private_message" && elemento.to === nomeDeUsuario){
         return `
     <div class="private"> 
     <span class="time">(${elemento.time})</span> <span class="negrito">${elemento.from}</span> para <span class="negrito">${elemento.to}</span>: ${elemento.text}
     </div>
   `;
-    } 
+    }
+}
+
+function enviarMensagem() {
+    let msg = document.querySelector('input').value;
+    let timeNow = new Date().toLocaleTimeString();
+    let msgCompleta = {
+        from: username,
+		to: "Todos",
+		text: msg,
+		type: "message",
+		time: timeNow
+    }; 
+    let enviar = axios.post('https://mock-api.driven.com.br/api/v6/uol/messages', msgCompleta);
+    enviar.then(puxarMensagens);
+    enviar.catch(recarregar);
+}
+
+function recarregar() {
+    window.location.reload();
 }
