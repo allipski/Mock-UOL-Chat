@@ -25,7 +25,55 @@ function deuRuimUsername(erro) {
     alert ("Já existe um usuário com esse nome, por favor escolha um novo.")
     checkUsername();
 }
+function puxarMensagens() {
+    let promise = axios.get('https://mock-api.driven.com.br/api/v6/uol/messages');
+    promise.then(carregarMensagens);
+    promise.catch(erro);
+}
 
-function carregarMensagens() {
-    let mensagens = axios.get('https://mock-api.driven.com.br/api/v6/uol/messages');
+setInterval (puxarMensagens, 3000);
+
+let listaDeMensagens = [];
+
+function carregarMensagens(request) {
+listaDeMensagens = request.data;
+renderizarMensagens();
+}
+
+function erro(request) {
+    console.log("deu errado pt II");
+}
+
+function renderizarMensagens() {
+    let div = document.querySelector(".feedmensagens");
+    div.innerHTML = "";
+
+    for (let i = 0; i < listaDeMensagens.length; i++) {
+        const mensagematual = listaDeMensagens[i];
+        div.innerHTML += htmlMensagem(mensagematual);
+    }
+}
+
+function htmlMensagem(elemento) {
+    if (elemento.type === "message") {
+        return `
+    <div class="message"> 
+    <span class="time">(${elemento.time})</span> <span class="negrito">${elemento.from}</span> para <span class="negrito">${elemento.to}</span>: ${elemento.text}
+    </div>
+  `;
+    }
+    if (elemento.type === "status") {
+        return `
+    <div class="status"> 
+    <span class="time">(${elemento.time})</span> <span class="negrito">${elemento.from}</span> ${elemento.text}
+    </div>
+  `;
+    }
+    if (elemento.type === "private_message"){
+        return `
+    <div class="private"> 
+    <span class="time">(${elemento.time})</span> <span class="negrito">${elemento.from}</span> para <span class="negrito">${elemento.to}</span>: ${elemento.text}
+    </div>
+  `;
+    } 
 }
