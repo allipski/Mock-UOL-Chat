@@ -62,21 +62,23 @@ function htmlMensagem(elemento) {
     <div class="message"> 
     <span class="time">(${elemento.time})</span> <span class="negrito">${elemento.from}</span> para <span class="negrito">${elemento.to}</span>: ${elemento.text}
     </div>
-  `;
+    `;
     }
     if (elemento.type === "status") {
         return `
     <div class="status"> 
     <span class="time">(${elemento.time})</span> <span class="negrito">${elemento.from}</span> ${elemento.text}
     </div>
-  `;
+    `;
     }
-    if (elemento.type === "private_message" && elemento.to === nomeDeUsuario){
+    if (elemento.type === "private_message" && elemento.to === username){
         return `
     <div class="private"> 
     <span class="time">(${elemento.time})</span> <span class="negrito">${elemento.from}</span> para <span class="negrito">${elemento.to}</span>: ${elemento.text}
     </div>
-  `;
+    `;
+    } else {
+        return "";
     }
 }
 
